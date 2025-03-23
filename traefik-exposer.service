@@ -1,0 +1,15 @@
+[Unit]
+Description=Traefik Exposer Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/env /home/roberto/services/traefik-exposer/traefik-exposer
+WorkingDirectory=/home/roberto/services/traefik-exposer
+EnvironmentFile=-/home/roberto/services/traefik-exposer/.env
+Restart=on-failure
+User=roberto
+Group=roberto
+
+[Install]
+WantedBy=multi-user.target

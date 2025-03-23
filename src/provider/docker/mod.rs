@@ -19,7 +19,7 @@ fn label_key(name: &str) -> String {
 
 pub struct DockerProvider {
     client: bollard::Docker,
-    memory: Option<Vec<ContainerInfo>>,
+    memory: Option<TraefikConfig>,
     dirty: AtomicBool,
 }
 
@@ -37,7 +37,6 @@ impl From<Vec<ContainerInfo>> for TraefikConfig {
         let middlewares = std::collections::HashMap::new();
 
         for container in container_infos {
-            println!("Processing container '{:?}'", container.name);
             if let Some(enabled) = container.labels.get(&label_key("enabled")) {
                 if enabled == "true" {
                     let service_name = format!("{}-service", container.name);
@@ -74,13 +73,22 @@ impl From<Vec<ContainerInfo>> for TraefikConfig {
                         continue;
                     }
 
+                    println!(
+                        " - Exposing {} from {}: {}",
+                        container.name, container.ip, router_rule
+                    );
+
                     let router = RouterConfig {
                         entry_points: container
                             .labels
                             .get(&label_key("entrypoints"))
                             .map(|s| s.split(',').map(String::from).collect())
                             .unwrap_or_else(|| vec!["http".to_string()]),
-                        middlewares: vec![],
+                        middlewares: container
+                            .labels
+                            .get(&label_key("middlewares"))
+                            .map(|s| s.split(',').map(String::from).collect())
+                            .unwrap_or_default(),
                         service: service_name.clone(),
                         rule: router_rule,
                         rule_syntax: None,
@@ -91,21 +99,14 @@ impl From<Vec<ContainerInfo>> for TraefikConfig {
 
                     services.insert(service_name, service);
                     routers.insert(router_name, router);
-                } else {
-                    println!(
-                        "Container '{:?}' skipped because it is not enabled '{} = true'",
-                        container.name,
-                        label_key("enabled")
-                    )
                 }
-            } else {
-                println!(
-                    "Container '{:?}' skipped because it is missing the label '{} = true'",
-                    container.name,
-                    label_key("enabled")
-                )
             }
         }
+        println!(
+            "Created {} routers and {} services",
+            routers.len(),
+            services.len()
+        );
 
         TraefikConfig {
             http: Some(HttpConfig {
@@ -131,13 +132,12 @@ impl DockerProvider {
         self.dirty.store(true, std::sync::atomic::Ordering::Relaxed);
     }
 
-    pub async fn get_exposable_containers_info(&mut self) -> anyhow::Result<Vec<ContainerInfo>> {
+    pub async fn get_exposable_containers_info(&mut self) -> anyhow::Result<TraefikConfig> {
         if self.dirty.load(std::sync::atomic::Ordering::Relaxed) {
             self.memory = None;
         }
         if let Some(ref memory) = self.memory {
-            println!("responding from memory");
-            return Ok(memory.to_vec());
+            return Ok(memory.clone());
         }
 
         let options = Some(ListContainersOptions::<String> {
@@ -149,7 +149,7 @@ impl DockerProvider {
 
         let mut container_info_list = Vec::new();
 
-        println!("Found {} containers", containers.len());
+        println!("updating memory...");
         for container in containers {
             let labels: HashMap<String, String> = container
                 .labels
@@ -169,20 +169,19 @@ impl DockerProvider {
                 .values()
                 .next()
                 .map(|n| n.ip_address.clone())
+                .unwrap_or_default()
                 .unwrap_or_default();
 
-            container_info_list.push(ContainerInfo {
-                name,
-                ip: ip.unwrap_or_default(),
-                labels,
-            });
+            container_info_list.push(ContainerInfo { name, ip, labels });
         }
 
-        self.memory = Some(container_info_list.clone());
+        let traefik_config: TraefikConfig = container_info_list.into();
+
+        self.memory = Some(traefik_config.clone());
         self.dirty
             .store(false, std::sync::atomic::Ordering::Relaxed);
 
-        Ok(container_info_list)
+        Ok(traefik_config)
     }
 
     pub fn watch_container_events(&self, actions: Vec<String>) -> Receiver<EventMessage> {

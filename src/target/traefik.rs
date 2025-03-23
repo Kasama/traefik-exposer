@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RouterConfig {
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -21,7 +21,7 @@ pub struct RouterConfig {
     pub observability: Option<ObservabilityConfig>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TlsConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -32,7 +32,7 @@ pub struct TlsConfig {
     pub domains: Option<Vec<DomainConfig>>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DomainConfig {
     pub main: String,
@@ -40,7 +40,7 @@ pub struct DomainConfig {
     pub sans: Option<Vec<String>>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ObservabilityConfig {
     pub access_logs: bool,
@@ -48,7 +48,7 @@ pub struct ObservabilityConfig {
     pub metrics: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum ServiceConfig {
     Failover(FailoverConfig),
@@ -57,7 +57,7 @@ pub enum ServiceConfig {
     Weighted(WeightedConfig),
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FailoverConfig {
     pub service: String,
@@ -66,7 +66,7 @@ pub struct FailoverConfig {
     pub health_check: Option<HealthCheckConfig>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LoadBalancerConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -83,13 +83,13 @@ pub struct LoadBalancerConfig {
     pub servers_transport: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StickyConfig {
     pub cookie: CookieConfig,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CookieConfig {
     pub name: String,
@@ -100,7 +100,7 @@ pub struct CookieConfig {
     pub path: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ServerConfig {
     pub url: String,
@@ -108,7 +108,7 @@ pub struct ServerConfig {
     pub preserve_path: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct HealthCheckConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -135,14 +135,14 @@ pub struct HealthCheckConfig {
     pub headers: Option<std::collections::HashMap<String, String>>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ResponseForwardingConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flush_interval: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MirroringConfig {
     pub service: String,
@@ -154,14 +154,14 @@ pub struct MirroringConfig {
     pub health_check: Option<HealthCheckConfig>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MirrorConfig {
     pub name: String,
     pub percent: u32,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct WeightedConfig {
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -172,14 +172,14 @@ pub struct WeightedConfig {
     pub health_check: Option<HealthCheckConfig>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct WeightedServiceConfig {
     pub name: String,
     pub weight: u32,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[allow(clippy::large_enum_variant)]
 pub enum MiddlewareConfig {
@@ -210,13 +210,13 @@ pub enum MiddlewareConfig {
     StripPrefixRegex(StripPrefixRegexConfig),
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AddPrefixConfig {
     pub prefix: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct BasicAuthConfig {
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -231,7 +231,7 @@ pub struct BasicAuthConfig {
     pub header_field: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct BufferingConfig {
     pub max_request_body_bytes: u32,
@@ -241,14 +241,14 @@ pub struct BufferingConfig {
     pub retry_expression: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ChainConfig {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub middlewares: Vec<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CircuitBreakerConfig {
     pub expression: String,
@@ -258,7 +258,7 @@ pub struct CircuitBreakerConfig {
     pub response_code: u32,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CompressConfig {
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -271,13 +271,13 @@ pub struct CompressConfig {
     pub default_encoding: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ContentTypeConfig {
     pub auto_detect: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DigestAuthConfig {
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -292,7 +292,7 @@ pub struct DigestAuthConfig {
     pub header_field: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ErrorsConfig {
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -301,7 +301,7 @@ pub struct ErrorsConfig {
     pub query: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ForwardAuthConfig {
     pub address: String,
@@ -323,7 +323,7 @@ pub struct ForwardAuthConfig {
     pub preserve_location_header: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TlsAuthConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -336,14 +336,14 @@ pub struct TlsAuthConfig {
     pub ca_optional: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GrpcWebConfig {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub allow_origins: Vec<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct HeadersConfig {
     #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
@@ -400,7 +400,7 @@ pub struct HeadersConfig {
     pub ssl_force_host: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IpAllowListConfig {
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -411,7 +411,7 @@ pub struct IpAllowListConfig {
     pub reject_status_code: Option<u32>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IpStrategyConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -422,7 +422,7 @@ pub struct IpStrategyConfig {
     pub ipv6_subnet: Option<u32>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IpWhiteListConfig {
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -431,14 +431,14 @@ pub struct IpWhiteListConfig {
     pub ip_strategy: Option<IpStrategyConfig>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct InFlightReqConfig {
     pub amount: u32,
     pub source_criterion: SourceCriterionConfig,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SourceCriterionConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -448,7 +448,7 @@ pub struct SourceCriterionConfig {
     pub request_host: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PassTlsClientCertConfig {
     pub pem: bool,
@@ -456,7 +456,7 @@ pub struct PassTlsClientCertConfig {
     pub info: Option<CertInfoConfig>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CertInfoConfig {
     pub not_after: bool,
@@ -469,7 +469,7 @@ pub struct CertInfoConfig {
     pub issuer: Option<IssuerConfig>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SubjectConfig {
     pub country: bool,
@@ -482,7 +482,7 @@ pub struct SubjectConfig {
     pub domain_component: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct IssuerConfig {
     pub country: bool,
@@ -494,14 +494,14 @@ pub struct IssuerConfig {
     pub domain_component: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PluginConfig {
     #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
     pub plugin_conf: std::collections::HashMap<String, std::collections::HashMap<String, String>>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RateLimitConfig {
     pub average: u32,
@@ -510,7 +510,7 @@ pub struct RateLimitConfig {
     pub source_criterion: SourceCriterionConfig,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RedirectRegexConfig {
     pub regex: String,
@@ -518,7 +518,7 @@ pub struct RedirectRegexConfig {
     pub permanent: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RedirectSchemeConfig {
     pub scheme: String,
@@ -527,27 +527,27 @@ pub struct RedirectSchemeConfig {
     pub permanent: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ReplacePathConfig {
     pub path: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ReplacePathRegexConfig {
     pub regex: String,
     pub replacement: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RetryConfig {
     pub attempts: u32,
     pub initial_interval: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StripPrefixConfig {
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -555,14 +555,14 @@ pub struct StripPrefixConfig {
     pub force_slash: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StripPrefixRegexConfig {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub regex: Vec<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct HttpConfig {
     #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
@@ -573,7 +573,7 @@ pub struct HttpConfig {
     pub middlewares: std::collections::HashMap<String, MiddlewareConfig>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct TraefikConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
