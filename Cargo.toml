@@ -1,0 +1,18 @@
+[package]
+name = "traefik-exposer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = { version = "0.8" }
+anyhow = "1"
+bollard = { version = "0.18", features = ["chrono"] }
+chrono = { version = "0.4", features = ["std", "clock", "serde"] }
+clap = { version = "4", features = ["derive", "env"] }
+config = "0.15"
+dotenvy = "0.15"
+futures = "0.3"
+futures-core = "0.3"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
